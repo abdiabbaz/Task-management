@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using TodoLib.Models;
 using TodoLib.Services;
+using TodoServer.Model;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,6 +22,8 @@ namespace TodoServer.Controllers
 
         // GET: api/<TodosController>
         [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(204)]
         public async Task<IActionResult> Get()
         {
             IEnumerable<ToDo> list = await _repository.GetAll();
@@ -26,7 +31,6 @@ namespace TodoServer.Controllers
            return !list.Any() ? NoContent() : Ok(list);
 
         }
-
 
         // GET api/<TodosController>/5
         [HttpGet("{id}")]
@@ -45,16 +49,17 @@ namespace TodoServer.Controllers
 
         // POST api/<TodosController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] ToDo todo)
+        public async Task<IActionResult> Post([FromBody] TodoDTO todo)
         {
-            if (!Enum.IsDefined(typeof(PriorityLevel), todo.Priority))
+
+            if (!Enum.IsDefined(typeof(PriorityLevel), todo.priority))
             {
                 return BadRequest("Invalid Priority level.");
             }
-
             try
             {
-                var result = await _repository.Create(todo);
+                var item = Converter.ConvertToDTO(todo);
+                var result = await _repository.Create(item);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -65,11 +70,16 @@ namespace TodoServer.Controllers
 
         // PUT api/<TodosController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] ToDo todo)
+        public async Task<IActionResult> Put(int id, [FromBody] TodoDTO todo)
         {
+            if (!Enum.IsDefined(typeof(PriorityLevel), todo.priority))
+            {
+                return BadRequest("Invalid Priority level.");
+            }
             try
             {
-                var updatedItem = await _repository.Update(id, todo);
+                var item = Converter.ConvertToDTO(todo);   
+                var updatedItem = await _repository.Update(id, item);
 
                 return Ok(updatedItem);
             }
@@ -94,5 +104,28 @@ namespace TodoServer.Controllers
             }
 
         }
+
+        [HttpPatch("{id}/toggleCompleted")]
+        public async Task<IActionResult> ToggleCompleted(int id)
+        {
+            try
+            {
+                var todo = await _repository.Read(id);
+                if (todo == null)
+                {
+                    return NotFound("Todo not found.");
+                }
+
+                todo.IsCompleted = !todo.IsCompleted;
+                await _repository.Update(id, todo);
+
+                return Ok(todo);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }
