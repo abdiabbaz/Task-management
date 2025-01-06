@@ -111,21 +111,45 @@ namespace TodoServer.Controllers
             try
             {
                 var todo = await _repository.Read(id);
-                if (todo == null)
-                {
-                    return NotFound("Todo not found.");
-                }
 
                 todo.IsCompleted = !todo.IsCompleted;
                 await _repository.Update(id, todo);
 
                 return Ok(todo);
             }
-            catch (Exception ex)
+            catch (KeyNotFoundException ex)
             {
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("CompletedTrue")]
+        public async Task<IActionResult> AllCompleted()
+        {
+            var list = await _repository.FilterAllCompleted();
+
+            return !list.Any() ? NoContent() : Ok(list); 
+        }
+
+        [HttpGet("CompletedFalse")]
+        public async Task<IActionResult> NotCompleted()
+        {
+            var list = await _repository.FilterAllNotCompleted();
+
+            return !list.Any() ? NoContent() : Ok(list);
+        }
+
+        [HttpGet("FilterByPriority/{priority}")]
+        public async Task<IActionResult> FilterByPriority(PriorityLevel priority)
+        {
+                var todos = await _repository.FilterByPriority(priority);
+                if (!todos.Any())
+                {
+                    return NoContent();
+                }
+                return Ok(todos);
+        }
+
 
     }
 }

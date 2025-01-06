@@ -14,6 +14,9 @@ namespace TodoLib.Services
         public Task<ToDo> Delete(int id);
         public Task<ToDo> Update(int id, ToDo toDo);
         public Task<IEnumerable<ToDo>> GetAll();
+        public Task<IEnumerable<ToDo>> FilterAllCompleted();
+        public Task<IEnumerable<ToDo>> FilterAllNotCompleted();
+        public Task<IEnumerable<ToDo>> FilterByPriority(PriorityLevel priority);
     }
 
 }

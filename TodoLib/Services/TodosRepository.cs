@@ -67,5 +67,24 @@ namespace TodoLib.Services
             return await _itemContext.ToDos.ToListAsync();
         }
 
+        public async Task<IEnumerable<ToDo>> FilterAllCompleted()
+        {
+            return await _itemContext.ToDos.Where(x => x.IsCompleted == true).ToListAsync();
+        }
+
+
+        public async Task<IEnumerable<ToDo>> FilterAllNotCompleted()
+        {
+            return await _itemContext.ToDos.Where(x => x.IsCompleted == false).ToListAsync();
+        }
+
+        public async Task<IEnumerable<ToDo>> FilterByPriority(PriorityLevel priority)
+        {
+            return await _itemContext.ToDos.Where(x => x.Priority == priority).ToListAsync();
+        }
+
+
+
+
     }
 }
