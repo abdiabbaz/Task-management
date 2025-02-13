@@ -8,11 +8,10 @@ namespace TodoServer.Model
         {
             ToDo toDo = new ToDo();
 
+            toDo.TodoId = dto.todoId;
             toDo.Title = dto.title;
             toDo.Description = dto.description;
             toDo.Priority = dto.priority;
-            toDo.CreatedAt = dto.createdAt;
-            toDo.DueDate = dto.dueDate;
 
             return toDo;
         }

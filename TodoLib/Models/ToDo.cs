@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 
 namespace TodoLib.Models;
 
@@ -26,26 +27,19 @@ public partial class ToDo
 
     public bool IsCompleted { get; set; }
 
-    [Column(TypeName = "datetime")]
-    public DateTime CreatedAt { get; set; }
-
-    [Column(TypeName = "datetime")]
-    public DateTime? DueDate { get; set; }
-
 
     public ToDo()
     {
         
     }
 
-    public ToDo(int todoId, string title, string description, PriorityLevel priority, bool isCompleted, DateTime createdAt, DateTime? dueDate)
+    public ToDo(int todoId, string title, string description, PriorityLevel priority, bool isCompleted)
     {
         TodoId = todoId;
         Title = title;
         Description = description;
         Priority = priority;
         IsCompleted = isCompleted;
-        CreatedAt = createdAt;
-        DueDate = dueDate;
     }
+
 }

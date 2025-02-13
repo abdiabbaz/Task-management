@@ -55,8 +55,6 @@ namespace TodoLib.Services
             todoToBeUpdated.Description = toDo.Description;
             todoToBeUpdated.IsCompleted = toDo.IsCompleted;
             todoToBeUpdated.Priority = toDo.Priority;   
-            todoToBeUpdated.CreatedAt = toDo.CreatedAt;
-            todoToBeUpdated.DueDate = toDo.DueDate; 
 
             await _itemContext.SaveChangesAsync();
             return toDo;

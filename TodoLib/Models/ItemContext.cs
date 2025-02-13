@@ -34,9 +34,8 @@ public partial class ItemContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-            optionsBuilder.UseSqlServer(Secret.ConnectionString);
+        optionsBuilder.UseSqlServer(Secret.ConnectionString);
     }
-
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
